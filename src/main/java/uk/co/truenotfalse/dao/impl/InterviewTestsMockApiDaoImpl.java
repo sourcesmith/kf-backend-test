@@ -1,12 +1,20 @@
 package uk.co.truenotfalse.dao.impl;
 
 import java.time.OffsetDateTime;
+import java.time.chrono.IsoChronology;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.ResolverStyle;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+import static java.time.temporal.ChronoField.HOUR_OF_DAY;
+import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
+import static java.time.temporal.ChronoField.NANO_OF_SECOND;
+import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
@@ -95,20 +103,22 @@ public class InterviewTestsMockApiDaoImpl implements InterviewTestsMockApiDao
      *  {@inheritDoc}
      */
     @Override
-    public Single<Completable> updateSiteOutages(final String siteId, final List<DeviceOutage> outageUpdates)
+    public Completable updateSiteOutages(final String siteId, final List<DeviceOutage> outageUpdates)
     {
         LOG.trace("updateSiteOutages('{}', ...) called.", siteId);
 
         final JsonArray body =
           new JsonArray(outageUpdates.stream().
                                       map(outage -> new JsonObject().put("id", outage.getId().toString()).
+                                                                     put("name", outage.getDeviceName()).
                                                                      put("begin", ISO_OFFSET_DATE_TIME.format(outage.getBegin())).
-                                                                     put("end", outage.getEnd() != null ? ISO_OFFSET_DATE_TIME.format(outage.getEnd()) : null).
-                                                                     put("name", outage.getDeviceName())).toList());
+                                                                     put("end", outage.getEnd() != null ? ISO_OFFSET_DATE_TIME.format(outage.getEnd()) : null)).toList());
+
+        LOG.trace("Sending update to /site-outages/{}: {}", siteId, body);
 
         return authorize(webClient.postAbs(baseUri + SITE_OUTAGES_PATH + siteId)).
           putHeader(CONTENT_TYPE_KEY, JSON_MEDIA_TYPE).putHeader(ACCEPT_HEADER_KEY, JSON_MEDIA_TYPE).
-            expect(errorPredicate).timeout(10000L).rxSendJson(body).map(bufferHttpResponse -> Completable.complete());
+            expect(errorPredicate).timeout(10000L).rxSendJson(body).flatMapCompletable(bufferHttpResponse -> Completable.complete());
     }
 
 
@@ -175,6 +185,29 @@ public class InterviewTestsMockApiDaoImpl implements InterviewTestsMockApiDao
 
                                                                  return new RuntimeException(response.statusMessage());
                                                              }));
+
+    // The API requires 3 dp. for the fractional seconds even if the value is zero (and so optional).
+    // Fix 3 dp for fraction of a second.
+    private static final DateTimeFormatter ISO_LOCAL_TIME =
+      new DateTimeFormatterBuilder().appendValue(HOUR_OF_DAY, 2).appendLiteral(':').
+                                    appendValue(MINUTE_OF_HOUR, 2).optionalStart().appendLiteral(':').
+                                    appendValue(SECOND_OF_MINUTE, 2).optionalStart().
+                                    appendFraction(NANO_OF_SECOND, 3, 3, true).
+                                    toFormatter(Locale.getDefault(Locale.Category.FORMAT)).
+                                    withResolverStyle(ResolverStyle.STRICT);
+
+    // Fix 3 dp for fraction of a second.
+    public static final DateTimeFormatter ISO_LOCAL_DATE_TIME =
+      new DateTimeFormatterBuilder().parseCaseInsensitive().append(DateTimeFormatter.ISO_LOCAL_DATE).appendLiteral('T').
+                                    append(ISO_LOCAL_TIME).
+                                    toFormatter(Locale.getDefault(Locale.Category.FORMAT)).
+                                    withResolverStyle(ResolverStyle.STRICT).withChronology(IsoChronology.INSTANCE);
+
+    // Fix 3 dp for fraction of a second.
+    public static final DateTimeFormatter ISO_OFFSET_DATE_TIME =
+      new DateTimeFormatterBuilder().parseCaseInsensitive().append(ISO_LOCAL_DATE_TIME).appendOffsetId().
+                                    toFormatter(Locale.getDefault(Locale.Category.FORMAT)).
+                                    withResolverStyle(ResolverStyle.STRICT).withChronology(IsoChronology.INSTANCE);
 
     private final String baseUri;
     private final String apiKey;

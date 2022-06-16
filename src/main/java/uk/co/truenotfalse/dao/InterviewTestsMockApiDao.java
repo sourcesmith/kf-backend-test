@@ -36,5 +36,5 @@ public interface InterviewTestsMockApiDao
      *  @param siteId  The ID of the site to update.
      *  @param outageUpdates  The device information to update the site with.
      */
-    Single<Completable> updateSiteOutages(final String siteId, final List<DeviceOutage> outageUpdates);
+    Completable updateSiteOutages(final String siteId, final List<DeviceOutage> outageUpdates);
 }

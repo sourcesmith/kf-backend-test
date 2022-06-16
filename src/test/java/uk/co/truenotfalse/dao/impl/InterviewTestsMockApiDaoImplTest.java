@@ -247,7 +247,7 @@ public class InterviewTestsMockApiDaoImplTest
 
         // This is an updated with unexpected content but is does test we reach the endpoint.
         dao.updateSiteOutages("norwich-pear-tree", Collections.singletonList(outage)).
-          subscribe(response -> testContext.failNow("Expected a Bad Request response (400)."),
+          subscribe(() -> testContext.failNow("Expected a Bad Request response (400)."),
                     error ->
                     {
                         if(error instanceof IllegalArgumentException)
@@ -271,7 +271,7 @@ public class InterviewTestsMockApiDaoImplTest
     {
         // This is an update with unexpected content but is does test we reach the endpoint.
         dao.updateSiteOutages("no-such-site", Collections.emptyList()).
-           subscribe(response -> testContext.failNow("Expected a Not Found response (404)."),
+           subscribe(() -> testContext.failNow("Expected a Not Found response (404)."),
                      error ->
                      {
                          if(error instanceof NotFoundException)
@@ -294,7 +294,7 @@ public class InterviewTestsMockApiDaoImplTest
     void updateSiteOutagesNotAuthed(final Vertx vertx, final VertxTestContext testContext)
     {
         unauthedDao.updateSiteOutages("norwich-pear-tree", Collections.emptyList()).
-           subscribe(response -> testContext.failNow("Expected a Forbidden response (403)."),
+           subscribe(() -> testContext.failNow("Expected a Forbidden response (403)."),
                      error ->
                      {
                          if(error instanceof SecurityException)
@@ -317,7 +317,7 @@ public class InterviewTestsMockApiDaoImplTest
     void updateSiteOutagesTooManyRequests(final Vertx vertx, final VertxTestContext testContext)
     {
         dao.updateSiteOutages("too-much-too-soon", Collections.emptyList()).
-           subscribe(response -> testContext.failNow("A Too Many Requests response was expected (429)."),
+           subscribe(() -> testContext.failNow("A Too Many Requests response was expected (429)."),
                      error ->
                      {
                          if(error instanceof TooManyRequestsException)

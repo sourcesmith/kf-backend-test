@@ -70,15 +70,13 @@ public class DeviceOutage
     public void setDeviceName(final String name)
     {
         // For later initialization so do not allow to be set to null.
-        Objects.requireNonNull(name, "A device name is required.");
-
-        if(name.isBlank())
+        if((name != null && name.isBlank()) || null != deviceName)
         {
             // Assume a device name of only whitespace is not meaningful.
             throw new IllegalArgumentException("A meaningful device name is required.");
         }
 
-        this.deviceName = name;
+        deviceName = name;
     }
 
 
