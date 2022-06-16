@@ -17,13 +17,13 @@
 	</Appenders>
 
 	<Loggers>
-		<Logger name="uk.co.truenotfalse" level="trace" additivity="false">
-			<AppenderRef ref="file"/>
-		</Logger>
+<!--		<Logger name="uk.co.truenotfalse" level="trace" additivity="false">-->
+<!--			<AppenderRef ref="file"/>-->
+<!--		</Logger>-->
 
 		<Root level="warn">
 			<AppenderRef ref="STDOUT" level="warn"/>
-			<AppenderRef ref="file" level="trace"/>
+			<AppenderRef ref="file" level="info"/>
 		</Root>
 	</Loggers>
 </Configuration>
