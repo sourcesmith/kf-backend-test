@@ -1,0 +1,40 @@
+{
+  "id" : "70b9d6a3-6b78-48e1-9a7c-fb4b3b5ddd10",
+  "name" : "interview-tests-mock-api_v1_site-outages_norwich-pear-tree",
+  "request" : {
+    "url" : "/interview-tests-mock-api/v1/site-outages/norwich-pear-tree",
+    "method" : "POST",
+    "headers" : {
+      "Accept" : {
+        "equalTo" : "application/json",
+        "caseInsensitive" : true
+      },
+      "Content-Type" : {
+        "equalTo" : "application/json",
+        "caseInsensitive" : true
+      },
+      "x-api-key" : {
+        "equalTo" : "EltgJ5G8m44IzwE6UN2Y4B4NjPW77Zk6FJK3lL23"
+      }
+    }
+  },
+  "response" : {
+    "status" : 400,
+    "body" : "{\"message\":\"Unexpected outages received\"}",
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Date" : "Wed, 15 Jun 2022 21:15:17 GMT",
+      "x-amzn-RequestId" : "6d131b42-efaf-43ac-b95c-065bd94677ee",
+      "Access-Control-Allow-Origin" : "*",
+      "x-amz-apigw-id" : "TyDLjFUhjoEFfJw=",
+      "X-Amzn-Trace-Id" : "Root=1-62aa4be3-2e49632d0cd70ffe6d21e1d9",
+      "X-Cache" : "Error from cloudfront",
+      "Via" : "1.1 5059e7bd12388ef6673ed156d17eb756.cloudfront.net (CloudFront)",
+      "X-Amz-Cf-Pop" : "LHR50-P3",
+      "X-Amz-Cf-Id" : "niegDPbe4Bl6Qo9FHIeREtgCQ-VxVdwvifnOhpXQkhKSimU_lasdhg=="
+    }
+  },
+  "uuid" : "70b9d6a3-6b78-48e1-9a7c-fb4b3b5ddd10",
+  "persistent" : true,
+  "insertionIndex" : 5
+}

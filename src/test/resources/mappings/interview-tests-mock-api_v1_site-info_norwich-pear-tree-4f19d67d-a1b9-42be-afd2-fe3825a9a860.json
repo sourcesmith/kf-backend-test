@@ -1,0 +1,37 @@
+{
+  "id" : "4f19d67d-a1b9-42be-afd2-fe3825a9a860",
+  "name" : "interview-tests-mock-api_v1_site-info_norwich-pear-tree",
+  "request" : {
+    "url" : "/interview-tests-mock-api/v1/site-info/norwich-pear-tree",
+    "method" : "GET",
+    "headers" : {
+      "Accept" : {
+        "equalTo" : "application/json",
+        "caseInsensitive" : true
+      },
+      "x-api-key" : {
+        "equalTo" : "EltgJ5G8m44IzwE6UN2Y4B4NjPW77Zk6FJK3lL23"
+      }
+    }
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\"id\":\"norwich-pear-tree\",\"name\":\"Norwich Pear Tree\",\"devices\":[{\"id\":\"111183e7-fb90-436b-9951-63392b36bdd2\",\"name\":\"Battery 1\"},{\"id\":\"86b5c819-6a6c-4978-8c51-a2d810bb9318\",\"name\":\"Battery 2\"},{\"id\":\"70656668-571e-49fa-be2e-099c67d136ab\",\"name\":\"Battery 3\"},{\"id\":\"9ed11921-1c5b-40f4-be66-adb4e2f016bd\",\"name\":\"Battery 4\"},{\"id\":\"a79fe094-087b-4b1e-ae20-ac4bf7fa429b\",\"name\":\"Battery 5\"},{\"id\":\"0e4d59ba-43c7-4451-a8ac-ca628bcde417\",\"name\":\"Battery 6\"},{\"id\":\"20f6e664-f00e-4621-9ca4-5ec588aadeaf\",\"name\":\"Battery 7\"},{\"id\":\"75e96db4-bba2-4035-8f43-df2cbd3da859\",\"name\":\"Battery 8\"}]}",
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Date" : "Wed, 15 Jun 2022 20:22:38 GMT",
+      "x-amzn-RequestId" : "d4cbe469-c493-40e7-b1b1-d08bf1723f03",
+      "Access-Control-Allow-Origin" : "*",
+      "x-amz-apigw-id" : "Tx7eWFU1DoEFWRA=",
+      "X-Amzn-Trace-Id" : "Root=1-62aa3f8e-1efff1414a9b63b838b2dafa",
+      "X-Edge-Origin-FBL" : "0.105",
+      "X-Cache" : "Miss from cloudfront",
+      "Via" : "1.1 19d5615c4d307c11803beb015d8f6562.cloudfront.net (CloudFront)",
+      "X-Amz-Cf-Pop" : "LHR50-P3",
+      "X-Amz-Cf-Id" : "u68u14YFfxszM4HtP7rVZLtDfno1p80OJmSbZMAbMcB7FW3Zf41wyA=="
+    }
+  },
+  "uuid" : "4f19d67d-a1b9-42be-afd2-fe3825a9a860",
+  "persistent" : true,
+  "insertionIndex" : 3
+}

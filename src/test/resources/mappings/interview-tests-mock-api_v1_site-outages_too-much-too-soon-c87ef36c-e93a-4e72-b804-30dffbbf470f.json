@@ -1,0 +1,40 @@
+{
+  "id" : "c87ef36c-e93a-4e72-b804-30dffbbf470f",
+  "name" : "interview-tests-mock-api_v1_site-outages_too-much-too-soon",
+  "request" : {
+    "url" : "/interview-tests-mock-api/v1/site-outages/too-much-too-soon",
+    "method" : "POST",
+    "headers" : {
+      "Accept" : {
+        "equalTo" : "application/json",
+        "caseInsensitive" : true
+      },
+      "Content-Type" : {
+        "equalTo" : "application/json",
+        "caseInsensitive" : true
+      },
+      "x-api-key" : {
+        "equalTo" : "EltgJ5G8m44IzwE6UN2Y4B4NjPW77Zk6FJK3lL23"
+      }
+    }
+  },
+  "response" : {
+    "status" : 429,
+    "body" : "{\"message\":\"You have exceeded your limit for your API key\"}",
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Date" : "Thu, 16 Jun 2022 07:30:04 GMT",
+      "x-amzn-RequestId" : "16add1ff-f0b5-4dbb-bd07-aa4fdf292228",
+      "Access-Control-Allow-Origin" : "*",
+      "x-amz-apigw-id" : "TzdPPEymjoEFyqQ=",
+      "X-Amzn-Trace-Id" : "Root=1-62aadbfa-4b90dc0c0bf88beb0fa26c66",
+      "X-Cache" : "Error from cloudfront",
+      "Via" : "1.1 61df0586835e6744e27d7864085281b6.cloudfront.net (CloudFront)",
+      "X-Amz-Cf-Pop" : "LHR3-C2",
+      "X-Amz-Cf-Id" : "m3g0I3hVDvjcRz9A_UUhhFhojPXxM2pB-Y6vmwLnJ85A9yPbSv77lg=="
+    }
+  },
+  "uuid" : "c87ef36c-e93a-4e72-b804-30dffbbf470f",
+  "persistent" : true,
+  "insertionIndex" : 9
+}

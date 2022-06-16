@@ -1,0 +1,39 @@
+{
+  "id" : "a3f2c72e-07e3-4b3b-a350-5d8bec52d2bf",
+  "name" : "interview-tests-mock-api_v1_site-info_norwich-pear-tree",
+  "request" : {
+    "url" : "/interview-tests-mock-api/v1/site-info/norwich-pear-tree",
+    "method" : "GET",
+    "headers" : {
+      "Accept" : {
+        "equalTo" : "application/json",
+        "caseInsensitive" : true
+      },
+      "x-api-key" : {
+        "equalTo" : "not_a_valid_key"
+      }
+    }
+  },
+  "response" : {
+    "status" : 403,
+    "body" : "{\"message\":\"Forbidden\"}",
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Date" : "Thu, 16 Jun 2022 08:49:13 GMT",
+      "x-amzn-RequestId" : "37196a50-0c1a-4fc7-8331-a35800b57f59",
+      "Access-Control-Allow-Origin" : "*",
+      "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+      "x-amzn-ErrorType" : "ForbiddenException",
+      "x-amz-apigw-id" : "Tzo1lHFLDoEF85g=",
+      "Access-Control-Allow-Methods" : "GET,POST,PUT,DELETE,OPTIONS",
+      "X-Amzn-Trace-Id" : "Root=1-62aaee89-2b9ac5f5294ca3b279fe0bd7",
+      "X-Cache" : "Error from cloudfront",
+      "Via" : "1.1 1a4e563a6e42bff0fa38a09a453befac.cloudfront.net (CloudFront)",
+      "X-Amz-Cf-Pop" : "LHR3-C2",
+      "X-Amz-Cf-Id" : "R4JHVqIkRvBYg-0S4fYdPYSoSpIVq_IwcEIb1wUwXO97TNKxaT8mHA=="
+    }
+  },
+  "uuid" : "a3f2c72e-07e3-4b3b-a350-5d8bec52d2bf",
+  "persistent" : true,
+  "insertionIndex" : 17
+}

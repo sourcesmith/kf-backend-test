@@ -1,0 +1,40 @@
+{
+  "id" : "77f23bc9-c1b6-486b-806f-6c89cd64e691",
+  "name" : "interview-tests-mock-api_v1_site-outages_no-such-site",
+  "request" : {
+    "url" : "/interview-tests-mock-api/v1/site-outages/no-such-site",
+    "method" : "POST",
+    "headers" : {
+      "Accept" : {
+        "equalTo" : "application/json",
+        "caseInsensitive" : true
+      },
+      "Content-Type" : {
+        "equalTo" : "application/json",
+        "caseInsensitive" : true
+      },
+      "x-api-key" : {
+        "equalTo" : "EltgJ5G8m44IzwE6UN2Y4B4NjPW77Zk6FJK3lL23"
+      }
+    }
+  },
+  "response" : {
+    "status" : 404,
+    "body" : "{\"message\":\"Site not found\"}",
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Date" : "Thu, 16 Jun 2022 07:35:51 GMT",
+      "x-amzn-RequestId" : "f81923f9-f6a5-4997-b0da-d5aa5915313b",
+      "Access-Control-Allow-Origin" : "*",
+      "x-amz-apigw-id" : "TzeFrH9ejoEFclQ=",
+      "X-Amzn-Trace-Id" : "Root=1-62aadd57-0cf9a8565680a08c609df24c",
+      "X-Cache" : "Error from cloudfront",
+      "Via" : "1.1 1b8fbe8b282c39df77f9bf1f187cc284.cloudfront.net (CloudFront)",
+      "X-Amz-Cf-Pop" : "LHR62-C5",
+      "X-Amz-Cf-Id" : "rgpjHr79r4pKdkz_YmzYoGVVL8Sck79oQliKi2cVcY0fgambSJ67AA=="
+    }
+  },
+  "uuid" : "77f23bc9-c1b6-486b-806f-6c89cd64e691",
+  "persistent" : true,
+  "insertionIndex" : 13
+}

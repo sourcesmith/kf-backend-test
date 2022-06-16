@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="warn" name="ka-backend-test">
+	<Properties>
+		<Property name="filename">target/test-logs/test.log</Property>
+	</Properties>
+
+	<Appenders>
+		<Console name="STDOUT" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d %t %-5p  [%c{1}] %m %n"/>
+		</Console>
+
+		<RollingFile name="file" fileName="${filename}" filePattern="${filename}.%d{yyyy-MM-dd}" append="true">
+			<PatternLayout pattern="%d %t %-5p  [%c{1}] %m %n"/>
+			<Policies>
+				<TimeBasedTriggeringPolicy/>
+			</Policies>
+			<DefaultRolloverStrategy max="3"/>
+		</RollingFile>
+
+		<RollingFile name="errors-file" fileName="${filename}-err" filePattern="${filename}-err.%d{yyyy-MM-dd}" append="true">
+			<PatternLayout pattern="%d %t %-5p  [%c{1}] %m %n"/>
+			<Policies>
+				<TimeBasedTriggeringPolicy/>
+			</Policies>
+			<DefaultRolloverStrategy max="3"/>
+		</RollingFile>
+	</Appenders>
+
+	<Loggers>
+		<Root level="warn">
+			<AppenderRef ref="STDOUT" level="warn"/>
+			<AppenderRef ref="errors-file" level="error"/>
+			<AppenderRef ref="file" level="info"/>
+		</Root>
+	</Loggers>
+</Configuration>

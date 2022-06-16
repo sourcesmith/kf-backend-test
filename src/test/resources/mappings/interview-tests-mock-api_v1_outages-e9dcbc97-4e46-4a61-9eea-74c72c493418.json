@@ -1,0 +1,39 @@
+{
+  "id" : "e9dcbc97-4e46-4a61-9eea-74c72c493418",
+  "name" : "interview-tests-mock-api_v1_outages",
+  "request" : {
+    "url" : "/interview-tests-mock-api/v1/outages",
+    "method" : "GET",
+    "headers" : {
+      "Accept" : {
+        "equalTo" : "application/json",
+        "caseInsensitive" : true
+      },
+      "x-api-key" : {
+        "equalTo" : "not_a_valid_key"
+      }
+    }
+  },
+  "response" : {
+    "status" : 403,
+    "body" : "{\"message\":\"Forbidden\"}",
+    "headers" : {
+      "Content-Type" : "application/json",
+      "Date" : "Thu, 16 Jun 2022 08:42:20 GMT",
+      "x-amzn-RequestId" : "70bbbef4-f9c1-4649-85f5-3c41ec3c7f05",
+      "Access-Control-Allow-Origin" : "*",
+      "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+      "x-amzn-ErrorType" : "ForbiddenException",
+      "x-amz-apigw-id" : "Tzn0-EcLDoEFlqA=",
+      "Access-Control-Allow-Methods" : "GET,POST,PUT,DELETE,OPTIONS",
+      "X-Amzn-Trace-Id" : "Root=1-62aaecec-2beb9391635f137943c483b2",
+      "X-Cache" : "Error from cloudfront",
+      "Via" : "1.1 1b8fbe8b282c39df77f9bf1f187cc284.cloudfront.net (CloudFront)",
+      "X-Amz-Cf-Pop" : "LHR62-C5",
+      "X-Amz-Cf-Id" : "CenlnYSh8AeuRXCMogbomfMRkkycK3G5dJ7jBJDaAyy5wkdpkEjezw=="
+    }
+  },
+  "uuid" : "e9dcbc97-4e46-4a61-9eea-74c72c493418",
+  "persistent" : true,
+  "insertionIndex" : 15
+}
