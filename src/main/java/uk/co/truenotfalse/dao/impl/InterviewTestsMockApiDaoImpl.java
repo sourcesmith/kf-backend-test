@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoField.HOUR_OF_DAY;
@@ -34,6 +35,7 @@ import uk.co.truenotfalse.NotFoundException;
 import uk.co.truenotfalse.TooManyRequestsException;
 import uk.co.truenotfalse.dao.InterviewTestsMockApiDao;
 import uk.co.truenotfalse.model.DeviceOutage;
+import uk.co.truenotfalse.util.Rx3Utils;
 
 
 /**
@@ -81,7 +83,8 @@ public class InterviewTestsMockApiDaoImpl implements InterviewTestsMockApiDao
 
         return authorize(webClient.getAbs(baseUri + OUTAGES_PATH)).
           putHeader(ACCEPT_HEADER_KEY, JSON_MEDIA_TYPE).expect(errorPredicate).timeout(10000L).rxSend().
-            map(response -> mapOutagesResponse(response.bodyAsJsonArray()));
+            retryWhen(Rx3Utils.exponentialBackoff(1L, TimeUnit.SECONDS, 2.0f, 3)).
+              map(response -> mapOutagesResponse(response.bodyAsJsonArray()));
     }
 
 
@@ -95,7 +98,8 @@ public class InterviewTestsMockApiDaoImpl implements InterviewTestsMockApiDao
 
         return authorize(webClient.getAbs(baseUri + SITE_INFO_PATH + siteId)).
           putHeader(ACCEPT_HEADER_KEY, JSON_MEDIA_TYPE).expect(errorPredicate).timeout(10000L).rxSend().
-            map(response -> mapSiteInfoResponse(response.bodyAsJsonObject()));
+            retryWhen(Rx3Utils.exponentialBackoff(1L, TimeUnit.SECONDS, 2.0f, 3)).
+              map(response -> mapSiteInfoResponse(response.bodyAsJsonObject()));
     }
 
 
@@ -118,7 +122,9 @@ public class InterviewTestsMockApiDaoImpl implements InterviewTestsMockApiDao
 
         return authorize(webClient.postAbs(baseUri + SITE_OUTAGES_PATH + siteId)).
           putHeader(CONTENT_TYPE_KEY, JSON_MEDIA_TYPE).putHeader(ACCEPT_HEADER_KEY, JSON_MEDIA_TYPE).
-            expect(errorPredicate).timeout(10000L).rxSendJson(body).flatMapCompletable(bufferHttpResponse -> Completable.complete());
+            expect(errorPredicate).timeout(10000L).rxSendJson(body).
+              retryWhen(Rx3Utils.exponentialBackoff(1L, TimeUnit.SECONDS, 2.0f, 3)).
+                flatMapCompletable(bufferHttpResponse -> Completable.complete());
     }
 
 
