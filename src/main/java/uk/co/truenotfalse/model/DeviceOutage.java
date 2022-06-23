@@ -5,19 +5,17 @@ import java.util.Objects;
 
 
 /**
- *  Represents a period of outage for a device with given ID.
+ * Represents a period of outage for a device with given ID.
  */
-public class DeviceOutage
-{
+public class DeviceOutage {
     /**
-     *  Creates an instance of this class.
+     * Creates an instance of this class.
      *
-     *  @see #getId()
-     *  @see #getBegin()
-     *  @see #getEnd()
+     * @see #getId()
+     * @see #getBegin()
+     * @see #getEnd()
      */
-    public DeviceOutage(final Object id, final OffsetDateTime begin, final OffsetDateTime end)
-    {
+    public DeviceOutage(final Object id, final OffsetDateTime begin, final OffsetDateTime end) {
         Objects.requireNonNull(id, "An object ID is required.");
         Objects.requireNonNull(begin, "The beginning of an outage is required.");
         // I assume an outage can be ongoing and that this is indicated by a null value?
@@ -29,49 +27,43 @@ public class DeviceOutage
 
 
     /**
-     *  The ID of the device that experienced the outage.
+     * The ID of the device that experienced the outage.
      */
-    public Object getId()
-    {
+    public Object getId() {
         return id;
     }
 
     /**
-     *  The beginning of the outage period.
+     * The beginning of the outage period.
      */
-    public OffsetDateTime getBegin()
-    {
+    public OffsetDateTime getBegin() {
         return begin;
     }
 
     /**
-     *  The end of the outage period.  May be {@code null}.
+     * The end of the outage period.  May be {@code null}.
      */
-    public OffsetDateTime getEnd()
-    {
+    public OffsetDateTime getEnd() {
         return end;
     }
 
 
     /**
-     *  The name of the device.  May be {@code null}.
+     * The name of the device.  May be {@code null}.
      */
-    public String getDeviceName()
-    {
+    public String getDeviceName() {
         return deviceName;
     }
 
 
     /**
-     *  @see #getDeviceName()
+     * @see #getDeviceName()
      */
     // Generally, I prefer immutable value and data objects but has this is a simple app with a transient life-time,
     // I have gone with a partially mutable object.
-    public void setDeviceName(final String name)
-    {
+    public void setDeviceName(final String name) {
         // For later initialization so do not allow to be set to null.
-        if((name != null && name.isBlank()) || null != deviceName)
-        {
+        if ((name != null && name.isBlank()) || null != deviceName) {
             // Assume a device name of only whitespace is not meaningful.
             throw new IllegalArgumentException("A meaningful device name is required.");
         }
@@ -81,31 +73,26 @@ public class DeviceOutage
 
 
     @Override
-    public boolean equals(final Object rhs)
-    {
-        if(this == rhs)
-        {
+    public boolean equals(final Object rhs) {
+        if (this == rhs) {
             return true;
         }
-        if(rhs == null || getClass() != rhs.getClass())
-        {
+        if (rhs == null || getClass() != rhs.getClass()) {
             return false;
         }
 
-        final DeviceOutage that = (DeviceOutage)rhs;
+        final DeviceOutage that = (DeviceOutage) rhs;
         return id.equals(that.id) && begin.equals(that.begin) && Objects.equals(end, that.end);
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return Objects.hash(id, begin, end);
     }
 
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "{id=" + id + ", begin=" + begin + ", end=" + end + ", deviceName='" + deviceName + '\'' + '}';
     }
 

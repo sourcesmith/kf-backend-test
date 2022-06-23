@@ -1,47 +1,39 @@
 package uk.co.truenotfalse;
 
 /**
- *  Provides a version for the distribution.  An application can use this class to display a distribution version.
+ * Provides a version for the distribution.  An application can use this class to display a distribution version.
  */
-public final class Version
-{
+public final class Version {
     /**
-     *  The version as a String.
+     * The version as a String.
      */
-    public String getVersion()
-    {
+    public String getVersion() {
         return version;
     }
 
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return version;
     }
 
 
     /**
-     *  Outputs the version.
+     * Outputs the version.
      *
-     *  @param args  Not used.
+     * @param args Not used.
      */
-    public static void main(final String[] args)
-    {
+    public static void main(final String[] args) {
         System.out.println("Outage Agent/" + version);
     }
 
 
-    static
-    {
+    static {
         final String implVersion = Version.class.getPackage().getImplementationVersion();
 
-        if(implVersion == null || implVersion.isEmpty())
-        {
+        if (implVersion == null || implVersion.isEmpty()) {
             version = "version unknown";
-        }
-        else
-        {
+        } else {
             version = implVersion;
         }
     }
