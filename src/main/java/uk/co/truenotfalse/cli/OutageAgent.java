@@ -30,39 +30,56 @@ public class OutageAgent
 
     public static void main(final String... args) throws Exception
     {
+        final Args parsedArgs = handleArgs(args);
+
+        final OutageAgentService agent =
+          new OutageAgentService(new InterviewTestsMockApiDaoImpl(parsedArgs.getApiKey(), parsedArgs.getBaseUri(),
+                                                                  WebClient.create(Vertx.vertx())));
+
+        agent.updateOutages(parsedArgs.getSiteId(), parsedArgs.getCutoff()).
+          blockingSubscribe(() ->
+          {
+              LOG.info("Updated {}.", parsedArgs.getSiteId());
+              System.out.println("Site outages updated.");
+              Runtime.getRuntime().exit(SUCCESS_STATUS);
+          },
+          error ->
+          {
+              LOG.error("An error occurred.", error);
+              System.err.println("Error: " + error.getMessage());
+              Runtime.getRuntime().exit(FAILURE_STATUS);
+          });
+    }
+
+
+    private static Args handleArgs(final String... args)
+    {
         final Args parsedArgs = new Args();
         final JCommander commandLineParser = JCommander.newBuilder().addObject(parsedArgs).build();
 
-        commandLineParser.parse(args);
+        try
+        {
+            commandLineParser.parse(args);
+        }
+        catch(final ParameterException pe)
+        {
+            System.err.println(pe.getLocalizedMessage());
+            commandLineParser.usage();
+            Runtime.getRuntime().exit(FAILURE_STATUS);
+        }
 
         if(parsedArgs.isHelp())
         {
             commandLineParser.usage();
+            Runtime.getRuntime().exit(SUCCESS_STATUS);
         }
         else if(parsedArgs.isVersion())
         {
             printVersion();
+            Runtime.getRuntime().exit(SUCCESS_STATUS);
         }
-        else
-        {
-            final OutageAgentService agent =
-              new OutageAgentService(new InterviewTestsMockApiDaoImpl(parsedArgs.getApiKey(), parsedArgs.getBaseUri(),
-                                                                      WebClient.create(Vertx.vertx())));
 
-            agent.updateOutages(parsedArgs.getSiteId(), parsedArgs.getCutoff()).
-              blockingSubscribe(() ->
-              {
-                  LOG.info("Updated {}.", parsedArgs.getSiteId());
-                  System.out.println("Site outages updated.");
-                  Runtime.getRuntime().exit(SUCCESS_STATUS);
-              },
-              error ->
-              {
-                  LOG.error("An error occurred.", error);
-                  System.err.println("Error: " + error.getMessage());
-                  Runtime.getRuntime().exit(FAILURE_STATUS);
-              });
-        }
+        return parsedArgs;
     }
 
     private static void printVersion()
@@ -72,6 +89,7 @@ public class OutageAgent
         System.out.println(version);
         LOG.info(version);
     }
+
 
     @Parameters(resourceBundle = "uk.co.truenotfalse.cli.Cli")
     static class Args
@@ -118,9 +136,9 @@ public class OutageAgent
         private String siteId = DEFAULT_SITE_ID;
 
         @Parameter(names = {API_KEY_OPTION, SHORT_API_KEY_OPTION}, validateWith=ArgsValidator.class,
-          description = "The key to use to authorize requests with the API.",
-          descriptionKey = "apiKey.description")
-        private String apiKey = DEFAULT_API_KEY;
+          description = "The key to use to authorize requests with the API.  This is a required parameter.",
+          descriptionKey = "apiKey.description", required = true)
+        private String apiKey;
 
         @Parameter(names = {CUTOFF_OPTION, SHORT_CUTOFF_OPTION}, validateWith=ArgsValidator.class,
                    converter = OffsetDatetimeConverter.class,
@@ -137,7 +155,8 @@ public class OutageAgent
         private boolean help = false;
     }
 
-    static class ArgsValidator implements IParameterValidator
+
+    public static class ArgsValidator implements IParameterValidator
     {
         @Override
         public void validate(final String name, final String value) throws ParameterException
@@ -199,7 +218,6 @@ public class OutageAgent
 
     private static final String DEFAULT_BASE_URI = "https://api.krakenflex.systems/interview-tests-mock-api/v1";
     private static final String DEFAULT_SITE_ID = "norwich-pear-tree";
-    private static final String DEFAULT_API_KEY = "EltgJ5G8m44IzwE6UN2Y4B4NjPW77Zk6FJK3lL23";
     private static final OffsetDateTime DEFAULT_CUTOFF =
       OffsetDateTime.parse("2022-01-01T00:00:00.000Z", ISO_OFFSET_DATE_TIME);
 

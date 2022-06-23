@@ -35,7 +35,7 @@ public class InterviewTestsMockApiDaoImplTest
     @RegisterExtension
     static WireMockExtension wireMock =
       WireMockExtension.newInstance().options(wireMockConfig().dynamicPort().
-                                              recordRequestHeadersForMatching(List.of("Accept", "Content-Type", "x-api-key")).
+                                              recordRequestHeadersForMatching(List.of("Accept", "Content-Type")).
                                               extensions(new ResponseTemplateTransformer(false))).
                                       build();
 
@@ -43,13 +43,12 @@ public class InterviewTestsMockApiDaoImplTest
     public static void setUpClass(final Vertx vertx)
     {
         final WireMockRuntimeInfo runtimeInfo = wireMock.getRuntimeInfo();
+        // Specify an api key in api.properties if it is necessary to capture new wiremocks.
+        final String apiKey = System.getProperty("apiKey", "mock_api_key");
 
-        dao = new InterviewTestsMockApiDaoImpl("EltgJ5G8m44IzwE6UN2Y4B4NjPW77Zk6FJK3lL23",
+        dao = new InterviewTestsMockApiDaoImpl(apiKey,
                                                runtimeInfo.getHttpBaseUrl() + basePath,
                                                WebClient.create(vertx));
-        unauthedDao = new InterviewTestsMockApiDaoImpl("not_a_valid_key",
-                                                       runtimeInfo.getHttpBaseUrl() + basePath,
-                                                       WebClient.create(vertx));
     }
 
     @BeforeEach
@@ -90,12 +89,8 @@ public class InterviewTestsMockApiDaoImplTest
     {
         // There is nothing to differentiate this request from the recorded successful stub so set one up for this test.
         final StubMapping tooManyRequestsStub =
-          wireMock.stubFor(get(urlEqualTo(basePath + "/outages")).
-                             withHeader("Accept", equalTo("application/json")).atPriority(1).
-                             willReturn(aResponse().withStatus(429).withHeader("Content-Type", "application/json").
-                                                   withBody(
-                                                     "{\"message\":\"You have exceeded your limit for your API key\"}")).
-                             persistent(false));
+          createGetErrorResponseStub("/outages", 429,
+                                  "You have exceeded your limit for your API key");
 
         dao.getOutages().subscribe(response -> testContext.failNow("A Too Many Requests response was expected (429)."),
                                    error ->
@@ -126,24 +121,36 @@ public class InterviewTestsMockApiDaoImplTest
 
 
     @Test
-    void getOutagesNotAuthed(final Vertx vertx, final VertxTestContext testContext)
+    void getOutagesNotAuthed(final Vertx vertx, final VertxTestContext testContext) throws InterruptedException
     {
-        unauthedDao.getOutages().subscribe(response -> testContext.failNow("A Forbidden response was expected (403)."),
-                                           error ->
-                                           {
-                                               if(error instanceof SecurityException)
-                                               {
-                                                   testContext.completeNow();
-                                               }
-                                               else if(error.getCause() != null)
-                                               {
-                                                   testContext.failNow(error.getCause());
-                                               }
-                                               else
-                                               {
-                                                   testContext.failNow(error.getMessage());
-                                               }
-                                           });
+        final StubMapping forbiddenRequestStub =
+          createGetErrorResponseStub("/outages", 403, "Forbidden");
+
+        dao.getOutages().subscribe(response -> testContext.failNow("A Forbidden response was expected (403)."),
+                                   error ->
+                                   {
+                                       if(error instanceof SecurityException)
+                                       {
+                                           testContext.completeNow();
+                                       }
+                                       else if(error.getCause() != null)
+                                       {
+                                           testContext.failNow(error.getCause());
+                                       }
+                                       else
+                                       {
+                                           testContext.failNow(error.getMessage());
+                                       }
+                                   });
+
+        try
+        {
+            testContext.awaitCompletion(10L, TimeUnit.SECONDS);
+        }
+        finally
+        {
+            wireMock.removeStub(forbiddenRequestStub);
+        }
     }
 
 
@@ -190,9 +197,13 @@ public class InterviewTestsMockApiDaoImplTest
 
 
     @Test
-    void getSiteInfoNotAuthed(final Vertx vertx, final VertxTestContext testContext)
+    void getSiteInfoNotAuthed(final Vertx vertx, final VertxTestContext testContext) throws InterruptedException
     {
-        unauthedDao.getSiteInfo("norwich-pear-tree").
+        final String siteId = "norwich-pear-tree";
+        final StubMapping forbiddenRequestStub =
+          createGetErrorResponseStub("/site-info/" + siteId, 403, "Forbidden");
+
+        dao.getSiteInfo(siteId).
           subscribe(response -> testContext.failNow("A Forbidden response was expected (403)."),
                     error ->
                     {
@@ -209,6 +220,15 @@ public class InterviewTestsMockApiDaoImplTest
                             testContext.failNow(error.getMessage());
                         }
                     });
+
+        try
+        {
+            testContext.awaitCompletion(10L, TimeUnit.SECONDS);
+        }
+        finally
+        {
+            wireMock.removeStub(forbiddenRequestStub);
+        }
     }
 
 
@@ -291,25 +311,43 @@ public class InterviewTestsMockApiDaoImplTest
 
 
     @Test
-    void updateSiteOutagesNotAuthed(final Vertx vertx, final VertxTestContext testContext)
+    void updateSiteOutagesNotAuthed(final Vertx vertx, final VertxTestContext testContext) throws InterruptedException
     {
-        unauthedDao.updateSiteOutages("norwich-pear-tree", Collections.emptyList()).
-           subscribe(() -> testContext.failNow("Expected a Forbidden response (403)."),
-                     error ->
-                     {
-                         if(error instanceof SecurityException)
-                         {
-                             testContext.completeNow();
-                         }
-                         else if(error.getCause() != null)
-                         {
-                             testContext.failNow(error.getCause());
-                         }
-                         else
-                         {
-                             testContext.failNow(error.getMessage());
-                         }
-                     });
+        final String siteId = "norwich-pear-tree";
+        final StubMapping forbiddenRequestStub =
+          wireMock.stubFor(post(urlEqualTo(basePath + "/site-outages/norwich-pear-tree")).
+                           withHeader("Accept", equalTo("application/json")).atPriority(1).
+                           willReturn(aResponse().withStatus(403).
+                                                  withHeader("Content-Type", "application/json").
+                                                  withBody("{\"message\":\"Forbidden\"}")).
+                           persistent(false));
+
+        dao.updateSiteOutages(siteId, Collections.emptyList()).
+          subscribe(() -> testContext.failNow("Expected a Forbidden response (403)."),
+                    error ->
+                    {
+                        if(error instanceof SecurityException)
+                        {
+                            testContext.completeNow();
+                        }
+                        else if(error.getCause() != null)
+                        {
+                            testContext.failNow(error.getCause());
+                        }
+                        else
+                        {
+                            testContext.failNow(error.getMessage());
+                        }
+                    });
+
+        try
+        {
+            testContext.awaitCompletion(10L, TimeUnit.SECONDS);
+        }
+        finally
+        {
+            wireMock.removeStub(forbiddenRequestStub);
+        }
     }
 
 
@@ -335,12 +373,24 @@ public class InterviewTestsMockApiDaoImplTest
                      });
     }
 
+
+    private StubMapping createGetErrorResponseStub(final String endpointRelativePath, final int responseStatus,
+                                                   final String errorMessage)
+    {
+        return
+          wireMock.stubFor(get(urlEqualTo(basePath + endpointRelativePath)).
+                             withHeader("Accept", equalTo("application/json")).atPriority(1).
+                             willReturn(aResponse().withStatus(responseStatus).
+                                                    withHeader("Content-Type", "application/json").
+                                                    withBody("{\"message\":\"" + errorMessage + "\"}")).
+                             persistent(false));
+    }
+
+
     private static final String basePath = "/interview-tests-mock-api/v1";
 
     private final RecordSpec recordSpec = recordSpec().captureHeader("Accept", true).
-                                                       captureHeader("Content-Type", true).
-                                                       captureHeader("x-api-key").build();
+                                                       captureHeader("Content-Type", true).build();
 
     private static InterviewTestsMockApiDaoImpl dao;
-    private static InterviewTestsMockApiDaoImpl unauthedDao;
 }
